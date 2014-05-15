@@ -158,7 +158,7 @@ if (!empty($session_list)) {
         unset($session[1]);
     }
     echo Display::page_header(get_lang('Sessions'));
-    $table = new SortableTableFromArray($session_list, 0, 20, 'user_table');
+    $table = new SortableTableFromArray($session_list, 0, -1, 'user_table');
     $table->display();
 }
 

@@ -1603,7 +1603,7 @@ function getWorkListTeacher($start, $limit, $column, $direction, $where_conditio
 
     $course_id          = api_get_course_int_id();
     $session_id         = api_get_session_id();
-    $condition_session  = api_get_session_condition($session_id);
+    $condition_session  = api_get_session_condition($session_id, true, true);
     $group_id           = api_get_group_id();
     $is_allowed_to_edit = api_is_allowed_to_edit(null, true);
 
@@ -1635,7 +1635,7 @@ function getWorkListTeacher($start, $limit, $column, $direction, $where_conditio
 
         $sql .= " ORDER BY $column $direction ";
         $sql .= " LIMIT $start, $limit";
-
+echo $sql;Exit;
         $result = Database::query($sql);
 
         if ($getCount) {
