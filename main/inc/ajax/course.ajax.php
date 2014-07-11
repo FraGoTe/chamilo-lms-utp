@@ -54,6 +54,10 @@ switch ($action) {
         break;
     case 'search_course':
         if (api_is_platform_admin()) {
+            $categoryCode = '';
+            if (!empty($_GET['category_code'])) {
+                $categoryCode = $_GET['category_code'];
+            }
             if (!empty($_GET['session_id']) && intval($_GET['session_id'])) {
                 //if session is defined, lets find only courses of this session
                 $courseList = SessionManager::get_course_list_by_session_id(
@@ -71,7 +75,8 @@ switch ($action) {
                     -1,  //visibility
                     $_GET['q'],
                     null, //$urlId
-                    true //AlsoSearchCode
+                    true, //AlsoSearchCode
+                    $categoryCode
                 );
             }
 

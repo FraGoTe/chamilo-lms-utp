@@ -142,14 +142,16 @@ class CourseManager
 
     /**
      * Returns a list of courses. Should work with quickform syntax
-     * @param    integer   $from Offset (from the 7th = '6'). Optional.
-     * @param    integer   $howmany Number of results we want. Optional.
-     * @param    string    $orderby The column we want to order it by. Optional, defaults to first column.
-     * @param    string    $orderdirection The direction of the order (ASC or DESC). Optional, defaults to ASC.
-     * @param    string    $visibility The visibility of the course, or all by default.
-     * @param    string    $startwith If defined, only return results for which the course *title* begins with this string
-     * @param    string    $urlId The Access URL ID, if using multiple URLs
-     * @param    string    $alsoSearchCode An extension option to indicate that we also want to search for course codes (not *only* titles)
+     * @param int $from Offset (from the 7th = '6'). Optional.
+     * @param int $howmany Number of results we want. Optional.
+     * @param int $orderby The column we want to order it by. Optional, defaults to first column.
+     * @param string $orderdirection The direction of the order (ASC or DESC). Optional, defaults to ASC.
+     * @param $visibility The visibility of the course, or all by default.
+     * @param string $startwith If defined, only return results for which the course *title* begins with this string
+     * @param null $urlId The Access URL ID, if using multiple URLs
+     * @param bool $alsoSearchCode An extension option to indicate that we also want to search for course codes (not *only* titles)
+     * @param string $categoryCodeStarsWith Filter also by category code
+     *
      * @return array
      */
     public static function get_courses_list(
@@ -160,7 +162,8 @@ class CourseManager
         $visibility = -1,
         $startwith = '',
         $urlId = null,
-        $alsoSearchCode = false
+        $alsoSearchCode = false,
+        $categoryCodeStarsWith = ''
     ) {
 
         $sql = "SELECT course.*, course.id as real_id
@@ -185,6 +188,10 @@ class CourseManager
             if ($visibility !== -1 && $visibility == strval(intval($visibility))) {
                 $sql .= " AND visibility = $visibility ";
             }
+        }
+
+        if (!empty($categoryCodeStarsWith)) {
+            $sql .= " AND category_code like '" . Database::escape_string($categoryCodeStarsWith) . "%'";
         }
 
         if (!empty($urlId)) {

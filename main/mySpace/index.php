@@ -741,8 +741,8 @@ if ($is_platform_admin && in_array($view, array('admin')) && $display != 'yourst
             $sessionFilter->addElement('select_ajax', 'course_name', get_lang('SearchCourse'), null, array('url' => $url, 'defaults' => $courseList, 'width' => '400px', 'minimumInputLength' => $minimumInputLength));
         } else {
             if ($display == 'student_progress_report') {
-                $url = $ajax_path . 'course.ajax.php?a='. $a .'&session_id=' . $sessionId;
-                $sessionFilter->addElement('select_ajax', 'course_category', get_lang('Category'), null, array('url' => $url, 'defaults' => '', 'width' => '400px', 'minimumInputLength' => $minimumInputLength));
+                $url = $ajax_path . 'course.ajax.php?a=search_category';
+                $sessionFilter->addElement('select_ajax', 'category_code', get_lang('Category'), null, array('url' => $url, 'defaults' => '', 'width' => '400px', 'minimumInputLength' => $minimumInputLength));
             }
             $url = $ajax_path . 'course.ajax.php?a='. $a .'&session_id=' . $sessionId;
             $sessionFilter->addElement('select_ajax', 'course_name', get_lang('SearchCourse'), null, array('url' => $url, 'defaults' => $courseList, 'width' => '400px', 'minimumInputLength' => $minimumInputLength));
@@ -858,13 +858,15 @@ if ($is_platform_admin && in_array($view, array('admin')) && $display != 'yourst
         echo '<div class="">';
         echo $sessionFilter->return_form();
         echo '</div>';
-        $a = 'search_course';
-        if (!empty($sessionId)) {
-           $a = 'search_course_by_session';
-        }
 
-        if ($display == 'lpprogressoverview' || $display == 'progressoverview') {
+        if ($display == 'student_progress_report') {
+            $a = 'search_course';
+        } elseif (!empty($sessionId)) {
+            $a = 'search_course_by_session';
+        } elseif ($display == 'lpprogressoverview' || $display == 'progressoverview') {
             $a = 'search_course_by_session_all';
+        } else {
+            $a = 'search_course';
         }
 
         $url = $ajax_path . 'course.ajax.php?a='. $a .'&session_id=' . $sessionId;
@@ -929,8 +931,6 @@ if ($is_platform_admin && in_array($view, array('admin')) && $display != 'yourst
                     });
                        '
                    ) . '
-
-                //if (display == "lpprogressoverview" || display == "progressoverview" || display == "surveyoverview") {
                 ' . ( ($isSessionFirst) ? '
                    if (isEmpty($("#session_name").val())) {
                       $("#course_name").select2("readonly", true);
@@ -938,7 +938,11 @@ if ($is_platform_admin && in_array($view, array('admin')) && $display != 'yourst
                               $("#session_name").select2("readonly", true);
                           }'
                    ) . '
-                //}
+            });
+
+            $("#category_code").on("change", function() {
+                var categoryCode = $("#category_code").val();
+                select2("#course_name","' . $ajax_path . 'course.ajax.php?a='. $a .'&session_id=' . $sessionId . '&category_code=" + categoryCode);
             });
 
             $("#course_name").on("change", function() {
